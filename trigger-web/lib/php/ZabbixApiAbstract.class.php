@@ -208,13 +208,22 @@ abstract class ZabbixApiAbstract
         $this->id = number_format(microtime(true), 4, '', '');
 
         // build request array
-        $this->request = array(
-            'jsonrpc' => '2.0',
-            'method'  => $method,
-            'params'  => $params,
-            'auth'    => ($auth ? $this->auth : ''),
-            'id'      => $this->id
-        );
+	if ( $auth === TRUE ) {
+	        $this->request = array(
+	            'jsonrpc' => '2.0',
+	            'method'  => $method,
+	            'params'  => $params,
+	            'auth'    => ($auth ? $this->auth : ''),
+	            'id'      => $this->id
+        	);
+	} else {
+	        $this->request = array(
+	            'jsonrpc' => '2.0',
+	            'method'  => $method,
+	            'params'  => $params,
+	            'id'      => $this->id
+	        );
+	}
 
         // encode request array
         $this->requestEncoded = json_encode($this->request);
@@ -376,7 +385,7 @@ abstract class ZabbixApiAbstract
     final public function userLogin($params=array(), $arrayKeyProperty='')
     {
         $params = $this->getRequestParamsArray($params);
-        $this->auth = $this->request('user.login', $params, $arrayKeyProperty, FALSE);
+	$this->auth = $this->request('user.login', $params, $arrayKeyProperty, FALSE);
         return $this->auth;
     }
 
